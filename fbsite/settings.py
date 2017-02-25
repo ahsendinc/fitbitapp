@@ -38,10 +38,15 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'fitapp',
+    'app',
 ]
 
 FITAPP_CONSUMER_KEY = '2285HX'
 FITAPP_CONSUMER_SECRET = '43946f221a787192879d7242ea24adfa'
+FITAPP_SUBSCRIBE = True
+FITAPP_SUBSCRIBER_ID = '5G5L9G'
+
+FITAPP_LOGIN_REDIRECT = '/'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
