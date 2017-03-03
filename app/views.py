@@ -21,11 +21,12 @@ def index(request):
     headers= {'content-type':'application/x-www-form-urlencoded', 'Authorization':'Basic MjI4NUhYOjQzOTQ2ZjIyMWE3ODcxOTI4NzlkNzI0MmVhMjRhZGZh' }
     query= {"client_id":"2285HX","grant_type":"authorization_code","redirect_uri":"http://127.0.0.1:8000/app","code":"a0a81097560bc52b8ab005ff78b9753acdf83f71"}
     #res = requests.post(url,headers=headers,data=query)
-    header = {'Authorization':'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI1RzVMOUciLCJhdWQiOiIyMjg1SFgiLCJpc3MiOiJGaXRiaXQiLCJ0eXAiOiJhY2Nlc3NfdG9rZW4iLCJzY29wZXMiOiJ3aHIgd251dCB3cHJvIHdzbGUgd3dlaSB3c29jIHdhY3Qgd3NldCB3bG9jIiwiZXhwIjoxNDg4MDAzOTQwLCJpYXQiOjE0ODc5NzUxNDB9.UmsrNsyBBZP7cDu7N9rtz-dn2aD_xRuhoHXpB7lYqfg'}
-    response = requests.get("https://api.fitbit.com/1/user/5G5L9G/activities/date/2017-02-10.json",headers=header)
+    header = {'Authorization':'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI1RzVMOUciLCJhdWQiOiIyMjg1SFgiLCJpc3MiOiJGaXRiaXQiLCJ0eXAiOiJhY2Nlc3NfdG9rZW4iLCJzY29wZXMiOiJ3aHIgd251dCB3cHJvIHdzbGUgd3dlaSB3c29jIHdhY3Qgd3NldCB3bG9jIiwiZXhwIjoxNDg4NTM0MzYzLCJpYXQiOjE0ODg1MDU1NjN9.V3OTxYTYkJgB7G4uml8GkPC4ftX6Y50wLC4SL4G4l3M'}
+    response = requests.get("https://api.fitbit.com/1/user/5G5L9G/activities/heart/date/2017-03-01/1d.json",headers=header)
     return HttpResponse(response)
 #return HttpResponse(requests.get("https://api.fitbit.com/1/user/5G5L9G/profile.json"))
 #return HttpResponse(res)
+
 
 def data(request):
     unauth_client = fitbit.Fitbit('2285HX','43946f221a787192879d7242ea24adfa')
@@ -45,4 +46,4 @@ def data(request):
 
 #https://api.fitbit.com/oauth2/token?client_id=2285HX&grant_type=authorization_code&redirect_uri=http://127.0.0.1:8000/app&code=0233c47ff3a573107e0c7c091e7cd7e1da38c6d6
 
-#{"access_token":"eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI1RzVMOUciLCJhdWQiOiIyMjg1SFgiLCJpc3MiOiJGaXRiaXQiLCJ0eXAiOiJhY2Nlc3NfdG9rZW4iLCJzY29wZXMiOiJ3aHIgd251dCB3cHJvIHdzbGUgd3dlaSB3c29jIHdhY3Qgd3NldCB3bG9jIiwiZXhwIjoxNDg4MDAzOTQwLCJpYXQiOjE0ODc5NzUxNDB9.UmsrNsyBBZP7cDu7N9rtz-dn2aD_xRuhoHXpB7lYqfg","expires_in":28800,"refresh_token":"5fea396ccab5782ca12fa6a28b298bd2a263d891f45aae8034f7102369c70462","scope":"sleep location activity social weight nutrition profile heartrate settings","token_type":"Bearer","user_id":"5G5L9G"}
+#"access_token": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI1RzVMOUciLCJhdWQiOiIyMjg1SFgiLCJpc3MiOiJGaXRiaXQiLCJ0eXAiOiJhY2Nlc3NfdG9rZW4iLCJzY29wZXMiOiJ3aHIgd251dCB3cHJvIHdzbGUgd3dlaSB3c29jIHdhY3Qgd3NldCB3bG9jIiwiZXhwIjoxNDg4NTM0MzYzLCJpYXQiOjE0ODg1MDU1NjN9.V3OTxYTYkJgB7G4uml8GkPC4ftX6Y50wLC4SL4G4l3M","expires_in": 28800,"refresh_token": "4dd124e3b93ca2d550d4e9e357c36b1aff2a7ad5c6bf2be8232fef82cbc17693","scope": "location heartrate nutrition social sleep activity settings weight profile","token_type": "Bearer","user_id": "5G5L9G"
