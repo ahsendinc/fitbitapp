@@ -1,7 +1,7 @@
 # Your Fitbit access credentials, which must be requested from Fitbit.
 # You must provide these in your project's settings.
-FITAPP_CONSUMER_KEY = None
-FITAPP_CONSUMER_SECRET = None
+FITAPP_CONSUMER_KEY = '2285HX'
+FITAPP_CONSUMER_SECRET = '43946f221a787192879d7242ea24adfa'
 
 # The verification code for verifying subscriber endpoints
 FITAPP_VERIFICATION_CODE = None
