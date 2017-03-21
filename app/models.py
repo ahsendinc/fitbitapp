@@ -17,3 +17,10 @@ class GenericData (models.Model):
         recent_published.admin_order_field = 'pub_date'
         recent_published.boolean = True
         recent_published.short_description = 'Recent Data'
+
+class Data (models.Model):
+    
+    clientId = models.CharField(max_length=200)
+    pub_date = models.DateTimeField(auto_now_add=True)
+    data_type = models.CharField(max_length=200)
+    value = models.FloatField()
