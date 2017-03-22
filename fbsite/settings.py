@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'fitapp',
     'app',
+    'loginapp'
 ]
 
 FITAPP_CONSUMER_KEY = '2285HX'
