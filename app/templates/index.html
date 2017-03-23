@@ -22,10 +22,11 @@
       
       <div class="tab-content">
         <div id="signup">   
-          <h1>Sign Up for Free</h1>
+          <h1>Health Metrics Registration</h1>
           
           <form  action="{% url 'registration' %}" method="post">
           {% csrf_token %}
+          {{ fMyRegistrationForm.as_p }}
           <div class="top-row">
             <div class="field-wrap">
               <label>
@@ -50,13 +51,28 @@
             </label>
             <input id = "id_email" name="email" type="email" required autocomplete="off"/>
           </div>
-          
+
+          <div class="field-wrap">
+            <label>
+              User Name <span class="req">*</span>
+            </label>
+            <input id = "id_username" name="username" type="text" required autocomplete="off"/>
+          </div>
+
           <div class="field-wrap">
             <label>
               Set A Password<span class="req">*</span>
             </label>
             <!-- <input type="password"required autocomplete="off"/> -->
-            <input id="id_password" name="password" type="password" required="">
+            <input id="id_password" name="password1" type="password" required="">
+          </div>
+
+          <div class="field-wrap">
+            <label>
+              Set A Password<span class="req">*</span>
+            </label>
+            <!-- <input type="password"required autocomplete="off"/> -->
+            <input id="id_password" name="password2" type="password" required="">
           </div>
 
           <div class="field-wrap">

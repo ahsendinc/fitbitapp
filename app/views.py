@@ -65,7 +65,8 @@ def register_user(request):
         form = MyRegistrationForm(request.POST)     # create form object
         if form.is_valid():
             form.save()
-            return HttpResponseRedirect('/accounts/register_success')
+            #return HttpResponseRedirect('/accounts/register_success')
+            return HttpResponse("registered")
     # args = {}
     # args.update(csrf(request))
     # args['form'] = MyRegistrationForm()
