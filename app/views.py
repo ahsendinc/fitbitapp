@@ -15,10 +15,10 @@ from django.http import HttpResponseRedirect
 from django.contrib import auth                 
 from app.forms import MyRegistrationForm
 
-@fitbit_integration_warning(msg="Integrate your account with Fitbit!")
+#@fitbit_integration_warning(msg="Integrate your account with Fitbit!")
 @login_required
 def my_view(request):
-    return HttpResponse('Visible to authenticated users regardless' + 'of Fitbit integration status')
+    return HttpResponse('You are successfully logged in, '+request.user.username+' .Visible to authenticated users regardless of Fitbit integration status')
 
 def index(request):
    #Load Settings
@@ -51,7 +51,8 @@ def login_view(request):
     if user is not None:
         login(request, user)
         # Redirect to a success page.
-        return HttpResponse("logged in!")
+        #return HttpResponse(user.username + ",You are successfully logged in!" )
+        return HttpResponseRedirect('/app/myview')
     else:
         # Return an 'invalid login' error message.
         return HttpResponse("invalid!")
@@ -66,7 +67,7 @@ def register_user(request):
         if form.is_valid():
             form.save()
             #return HttpResponseRedirect('/accounts/register_success')
-            return HttpResponse("registered")
+            return HttpResponse("Thank you, you are registered!")
     # args = {}
     # args.update(csrf(request))
     # args['form'] = MyRegistrationForm()
