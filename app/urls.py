@@ -6,6 +6,6 @@ urlpatterns = [
     url(r'^$', views.index),
     url(r'^data$', views.data),
     url(r'^myview$', views.my_view),
-    url(r'^login/', login_view(), name="login")
+               #url(r'^login/', login_view(), name="login")
 ]
 
