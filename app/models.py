@@ -27,18 +27,18 @@ class Data (models.Model):
     data_type = models.CharField(max_length=200)
     value = models.FloatField()
 
-class Profile(models.Model):
+# class Profile(models.Model):
     
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    firstname = models.CharField(max_length=100, blank=True)
-    lastname = models.CharField(max_length=100, blank=True)
-    fitbitid = models.CharField(max_length=100, blank=True)
+#     user = models.OneToOneField(User, on_delete=models.CASCADE)
+#     firstname = models.CharField(max_length=100, blank=True)
+#     lastname = models.CharField(max_length=100, blank=True)
+#     fitbitid = models.CharField(max_length=100, blank=True)
 
-@receiver(post_save, sender=User)
-def create_user_profile(sender, instance, created, **kwargs):
-    if created:
-        Profile.objects.create(user=instance)
+# @receiver(post_save, sender=User)
+# def create_user_profile(sender, instance, created, **kwargs):
+#     if created:
+#         Profile.objects.create(user=instance)
 
-@receiver(post_save, sender=User)
-def save_user_profile(sender, instance, **kwargs):
-    instance.profile.save()
+# @receiver(post_save, sender=User)
+# def save_user_profile(sender, instance, **kwargs):
+#     instance.profile.save()

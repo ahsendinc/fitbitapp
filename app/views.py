@@ -8,6 +8,12 @@ from app.models import GenericData
 import json
 import configparser
 from django.conf import settings
+from django.db import transaction
+from django.contrib.auth import authenticate, login, logout
+
+from django.http import HttpResponseRedirect    
+from django.contrib import auth                 
+from app.forms import MyRegistrationForm
 
 @fitbit_integration_warning(msg="Integrate your account with Fitbit!")
 @login_required
@@ -37,26 +43,57 @@ def data(request):
     unauth_client.food_units()
     return HttpResponse("Fitbit!")
 
-@login_required
-@transaction.atomic
-def update_profile(request):
-    if request.method == 'POST':
-        user_form = UserForm(request.POST, instance=request.user)
-        profile_form = ProfileForm(request.POST, instance=request.user.profile)
-        if user_form.is_valid() and profile_form.is_valid():
-            user_form.save()
-            profile_form.save()
-            messages.success(request, _('Your profile was successfully updated!'))
-            return redirect('settings:profile')
-        else:
-            messages.error(request, _('Please correct the error below.'))
+
+def login_view(request):
+    username = request.POST['username']
+    password = request.POST['password']
+    user = authenticate(username=username, password=password)
+    if user is not None:
+        login(request, user)
+        # Redirect to a success page.
+        return HttpResponse("logged in!")
     else:
-        user_form = UserForm(instance=request.user)
-        profile_form = ProfileForm(instance=request.user.profile)
-    return render(request, 'profiles/profile.html', {
-        'user_form': user_form,
-        'profile_form': profile_form
+        # Return an 'invalid login' error message.
+        return HttpResponse("invalid!")
+
+def logout_view(request):
+    logout(request)
+    # Redirect to a success page.
+
+def register_user(request):
+    if request.method == 'POST':
+        form = MyRegistrationForm(request.POST)     # create form object
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect('/accounts/register_success')
+    # args = {}
+    # args.update(csrf(request))
+    # args['form'] = MyRegistrationForm()
+    #print args
+    return render(request, 'index.html', {
+        'form': MyRegistrationForm(),
     })
+
+# @login_required
+# @transaction.atomic
+# def update_profile(request):
+#     if request.method == 'POST':
+#         user_form = UserForm(request.POST, instance=request.user)
+#         profile_form = ProfileForm(request.POST, instance=request.user.profile)
+#         if user_form.is_valid() and profile_form.is_valid():
+#             user_form.save()
+#             profile_form.save()
+#             messages.success(request, _('Your profile was successfully updated!'))
+#             return redirect('settings:profile')
+#         else:
+#             messages.error(request, _('Please correct the error below.'))
+#     else:
+#         user_form = UserForm(instance=request.user)
+#         profile_form = ProfileForm(instance=request.user.profile)
+#     return render(request, 'profiles/profile.html', {
+#         'user_form': user_form,
+#         'profile_form': profile_form
+#     })
 #http://127.0.0.1:8000/app/?code=5080a09ec06919e9fa4562f97b9382b60504a207
 #code=5adf26feacf45d63bfc645e95e5f1b5e3cea7ba1 =>for sleep
 
