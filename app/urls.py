@@ -8,6 +8,7 @@ urlpatterns = [
     url(r'^data$', views.data),
     url(r'^myview$', views.my_view),
     url(r'^registration$', views.register_user, name = "registration"),
+    url(r'^profile2$', views.profile2, name='profile2'),
     #url(r'^accounts/login/$', auth_views.login, {'template_name': 'index.html','authentication_form': LoginForm}, name="login") ,
 
     url(r'^login/', views.login_view, name = "login_view")

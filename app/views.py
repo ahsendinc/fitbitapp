@@ -43,6 +43,8 @@ def data(request):
     unauth_client.food_units()
     return HttpResponse("Fitbit!")
 
+def profile2(request):
+    return render(request, 'profile2.html')
 
 def login_view(request):
     username = request.POST['username']
