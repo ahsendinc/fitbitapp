@@ -1,0 +1,80 @@
+html,body {
+    height:100%;
+    background: white;
+
+}
+
+.navbar-inverse {
+    margin: 0 auto;
+}
+
+.navbar-inverse .navbar-brand {
+    color: #1ab188;
+}
+
+.navbar-inverse .container-fluid {
+    width: 800px;
+    margin: 0 auto;
+}
+
+.navbar-inner {
+    min-height: 0px;
+}
+
+.navbar-fixed-bottom, .navbar-fixed-top, .navbar-static-top {
+    border-radius: 0;
+    background: rgba(2, 35, 47, 0.9);
+}
+
+#core-body {
+    width: 800px;
+    height: 100%;
+    margin: 0 auto;
+    display: flex;
+    background: white;
+    color: #1ab188;
+    border-bottom: 1px solid #a0b3b0;
+    border-left: 1px solid #a0b3b0;
+    border-right: 1px solid #a0b3b0;
+}
+
+#left-half {
+    width: 40%;
+    float: left;
+    border-right: 1px solid #a0b3b0;
+}
+
+#left-half button {
+    color: black;
+    margin: 0 auto;
+    bottom: 0;
+}
+
+#left-half-profile-image {
+    width: 80%;
+    margin: 0 auto;
+}
+
+#right-half {
+    width: 60%;
+    float: right;
+    align-items: stretch;
+    height: 100%;
+
+}
+
+#top-right-half, #bot-right-half {
+    align-items: stretch;
+    height: 50%;
+    position: relative;
+}
+
+#top-right-half {
+    top: 0;
+    border-bottom: 1px solid #a0b3b0;
+}
+
+#bot-right-half {
+    bottom: 0;
+}
+
