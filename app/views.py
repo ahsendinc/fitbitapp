@@ -15,6 +15,7 @@ from django.http import HttpResponseRedirect
 from django.contrib import auth                 
 from app.forms import MyRegistrationForm
 
+from requests_oauthlib import OAuth2Session
 #@fitbit_integration_warning(msg="Integrate your account with Fitbit!")
 @login_required
 def my_view(request):
@@ -25,10 +26,36 @@ def index(request):
     consumer_key = settings.FITAPP_CONSUMER_KEY
     consumer_secret = settings.FITAPP_CONSUMER_SECRET
 
-    unauth_client = fitbit.Fitbit(consumer_key,consumer_secret)
-    user_params = unauth_client.user_profile_get(user_id='5G5L9G')
+    if request.user.is_authenticated():        
+        oauth = OAuth2Session(
+                consumer_key,
+                redirect_uri    = "http://127.0.0.1:8000/app/accesstoken",
+                scope           = "activity heartrate location nutrition profile settings sleep social weight")
+        fitbit_url_authorise_2 = "https://www.fitbit.com/oauth2/authorize"
+        authorization_url, state = oauth.authorization_url(fitbit_url_authorise_2)
 
-    return HttpResponse(user_params)
+    #if (request.method == "POST"):
+        #code = request.POST['token']
+        #return HttpResponse("code")
+        return HttpResponseRedirect(authorization_url)
+
+    return HttpResponseRedirect("/")
+    # unauth_client = fitbit.Fitbit(consumer_key,consumer_secret)
+    # user_params = unauth_client.user_profile_get(user_id='5G5L9G')
+
+    #return HttpResponse(request.user.username)
+
+def accesstoken(request):
+
+    # if(request.method == "POST"):
+    #     code = request.POST['code']
+    #     HttpResponse(code)
+    if request.user.is_authenticated():
+        code = request.GET.get('code')
+        state = request.GET.get('state')
+        return HttpResponse(code)
+    return HttpResponse("NONE")
+    #http://127.0.0.1:8000/app#access_token=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI1RzVMOUciLCJhdWQiOiIyMjg1SFgiLCJpc3MiOiJGaXRiaXQiLCJ0eXAiOiJhY2Nlc3NfdG9rZW4iLCJzY29wZXMiOiJ3aHIgd251dCB3cHJvIHdzbGUgd3dlaSB3c29jIHdzZXQgd2FjdCB3bG9jIiwiZXhwIjoxNDkxMTIzODkxLCJpYXQiOjE0OTA4NDI2NDZ9.OiW30vm3elUIcJwgMpxGfMfpfOPxDSklg7T5kOspvB4&user_id=5G5L9G&scope=sleep+settings+nutrition+activity+social+heartrate+profile+weight+location&token_type=Bearer&expires_in=281245
 
 def refreshtoken(refresh_token):
     url = 'https://api.fitbit.com/oauth2/token'
@@ -44,6 +71,8 @@ def data(request):
     return HttpResponse("Fitbit!")
 
 def profile2(request):
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect('/app/registration')
     return render(request, 'profile2.html')
 
 def login_view(request):
@@ -54,13 +83,17 @@ def login_view(request):
         login(request, user)
         # Redirect to a success page.
         #return HttpResponse(user.username + ",You are successfully logged in!" )
-        return HttpResponseRedirect('/app/myview')
+        return HttpResponseRedirect('/app/profile2')
     else:
         # Return an 'invalid login' error message.
         return HttpResponse("invalid!")
 
+
 def logout_view(request):
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect('/app/registration')
     logout(request)
+    return HttpResponse("You logged out successfully.")
     # Redirect to a success page.
 
 def register_user(request):
