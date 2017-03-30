@@ -16,6 +16,8 @@ from django.contrib import auth
 from app.forms import MyRegistrationForm
 
 from requests_oauthlib import OAuth2Session
+import base64
+
 #@fitbit_integration_warning(msg="Integrate your account with Fitbit!")
 @login_required
 def my_view(request):
@@ -53,7 +55,31 @@ def accesstoken(request):
     if request.user.is_authenticated():
         code = request.GET.get('code')
         state = request.GET.get('state')
-        return HttpResponse(code)
+
+        consumer_key = settings.FITAPP_CONSUMER_KEY
+        consumer_secret = settings.FITAPP_CONSUMER_SECRET
+        encodedkeysecret = 'MjI4NUhYOjQzOTQ2ZjIyMWE3ODcxOTI4NzlkNzI0MmVhMjRhZGZh'
+
+        fitbit_url_access_2 = "https://api.fitbit.com/oauth2/token"
+        url     = fitbit_url_access_2
+        data    = "client_id="      + consumer_key     + "&" +\
+                  "grant_type="     + "authorization_code"  + "&" +\
+                  "redirect_uri="   + "http://127.0.0.1:8000/app/accesstoken"  + "&" +\
+                  "code="           + code
+
+        headers     = {
+            'Authorization': 'Basic ' + encodedkeysecret,
+            'Content-Type': 'application/x-www-form-urlencoded'}
+
+        r = requests.post(url, data=data, headers=headers).json()
+        access_token = r['access_token']
+        refresh_token = r['refresh_token']
+        scope = r['scope']
+        expires_in = r['expires_in']
+        user_id = r['user_id']
+        token_type = r['token_type']
+        return HttpResponse(user_id)
+        
     return HttpResponse("NONE")
     #http://127.0.0.1:8000/app#access_token=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI1RzVMOUciLCJhdWQiOiIyMjg1SFgiLCJpc3MiOiJGaXRiaXQiLCJ0eXAiOiJhY2Nlc3NfdG9rZW4iLCJzY29wZXMiOiJ3aHIgd251dCB3cHJvIHdzbGUgd3dlaSB3c29jIHdzZXQgd2FjdCB3bG9jIiwiZXhwIjoxNDkxMTIzODkxLCJpYXQiOjE0OTA4NDI2NDZ9.OiW30vm3elUIcJwgMpxGfMfpfOPxDSklg7T5kOspvB4&user_id=5G5L9G&scope=sleep+settings+nutrition+activity+social+heartrate+profile+weight+location&token_type=Bearer&expires_in=281245
 
