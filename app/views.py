@@ -4,7 +4,7 @@ import fitbit
 import requests
 from django.contrib.auth.decorators import login_required
 from fitapp.decorators import fitbit_integration_warning
-from app.models import GenericData
+from app.models import GenericData, AccessTokenInfo
 import json
 import configparser
 from django.conf import settings
@@ -17,6 +17,8 @@ from app.forms import MyRegistrationForm
 
 from requests_oauthlib import OAuth2Session
 import base64
+
+from django.utils import timezone
 
 #@fitbit_integration_warning(msg="Integrate your account with Fitbit!")
 @login_required
@@ -79,7 +81,27 @@ def accesstoken(request):
         user_id = r['user_id']
         token_type = r['token_type']
 
+        filteredModel = AccessTokenInfo.objects.filter(user_id = user_id)
+        if not filteredModel:
+            accessmodel = AccessTokenInfo(
+                access_token = access_token, 
+                refresh_token = refresh_token, 
+                scope = scope, 
+                expires_in = expires_in, 
+                user_id = user_id, 
+                token_type = token_type, 
+                username = request.user.username)
 
+            accessmodel.save()
+
+        else:
+            filteredModel.first().access_token = access_token 
+            filteredModel.first().refresh_token = refresh_token
+            filteredModel.first().scope = scope
+            filteredModel.first().expires_in = expires_in
+            filteredModel.first().token_type = token_type
+
+            filteredModel.first().save()
         #we need to store access token and refresh token with current user
 
         #---------getting user data-------------
@@ -87,27 +109,89 @@ def accesstoken(request):
 
         url_heartrate = "https://api.fitbit.com/1/user/" + user_id + "/activities/heart/date/today/1d/1min.json"
         response = requests.get(url_heartrate,headers=header)
-        parseJsonData(response,'activities-heart-intraday')
+        parseJsonData(response,'activities-heart-intraday', user_id)
 
         url_profile = "https://api.fitbit.com/1/user/-/profile.json"
         response = requests.get(url_profile,headers=header)
-        return HttpResponse(request.user.username)
 
-    return HttpResponse("NONE")
-    #http://127.0.0.1:8000/app#access_token=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI1RzVMOUciLCJhdWQiOiIyMjg1SFgiLCJpc3MiOiJGaXRiaXQiLCJ0eXAiOiJhY2Nlc3NfdG9rZW4iLCJzY29wZXMiOiJ3aHIgd251dCB3cHJvIHdzbGUgd3dlaSB3c29jIHdzZXQgd2FjdCB3bG9jIiwiZXhwIjoxNDkxMTIzODkxLCJpYXQiOjE0OTA4NDI2NDZ9.OiW30vm3elUIcJwgMpxGfMfpfOPxDSklg7T5kOspvB4&user_id=5G5L9G&scope=sleep+settings+nutrition+activity+social+heartrate+profile+weight+location&token_type=Bearer&expires_in=281245
+        
 
-def parseJsonData(response, datatype):
+        return HttpResponse(response)
+
+    return HttpResponse("You are not logged in!")
+   
+#get all user data with user_id
+def getAllData(user_id):
+
+    filteredToken = AccessTokenInfo.objects.get(user_id=user_id)
+
+    if filteredToken:
+        access_token = refreshtoken(filteredToken.refresh_token)
+        #---------getting user data-------------
+        header = {'Authorization':'Bearer ' + access_token}
+
+        url_heartrate = "https://api.fitbit.com/1/user/" + user_id + "/activities/heart/date/today/1d/1min.json"
+        response = requests.get(url_heartrate,headers=header)
+        parseJsonData(response,'activities-heart-intraday', user_id)
+
+        url_profile = "https://api.fitbit.com/1/user/-/profile.json"
+        response = requests.get(url_profile,headers=header)
+
+
+
+
+def parseJsonData(response, datatype, user_id):
+
     objs = response.json()
         #objs = json.loads(response.text)
     for index in range(len(objs[datatype]['dataset'])):
         print (objs[datatype]['dataset'][index]['value'])
 
 def refreshtoken(refresh_token):
-    url = 'https://api.fitbit.com/oauth2/token'
-    header= {'content-type':'application/x-www-form-urlencoded', 'Authorization':'Basic MjI4NUhYOjQzOTQ2ZjIyMWE3ODcxOTI4NzlkNzI0MmVhMjRhZGZh'}
-    query= {"grant_type":"refresh_token","refresh_token":refresh_token}
-    response = requests.post(url,headers=header)
-    return response.text
+    consumer_key = settings.FITAPP_CONSUMER_KEY
+    consumer_secret = settings.FITAPP_CONSUMER_SECRET
+    encodedkeysecret = 'MjI4NUhYOjQzOTQ2ZjIyMWE3ODcxOTI4NzlkNzI0MmVhMjRhZGZh'
+
+    fitbit_url_refresh= "https://api.fitbit.com/oauth2/token"
+    url     = fitbit_url_refresh
+    data    = "client_id="      + consumer_key     + "&" +\
+              "grant_type="     + "refresh_token"  + "&" +\
+              "refresh_token="           + refresh_token 
+
+    headers     = {
+        'Authorization': 'Basic ' + encodedkeysecret,
+        'Content-Type': 'application/x-www-form-urlencoded'}
+
+    r = requests.post(url, data=data, headers=headers).json()
+    access_token = r['access_token']
+    refresh_token = r['refresh_token']
+    scope = r['scope']
+    expires_in = r['expires_in']
+    user_id = r['user_id']
+    token_type = r['token_type']
+
+    filteredModel = AccessTokenInfo.objects.get(user_id = user_id)
+    if not filteredModel:
+        accessmodel = AccessTokenInfo(
+            access_token = access_token, 
+            refresh_token = refresh_token, 
+            scope = scope, 
+            expires_in = expires_in, 
+            user_id = user_id, 
+            token_type = token_type, 
+            username = request.user.username)
+
+        accessmodel.save()
+
+    else:
+        filteredModel.access_token = access_token 
+        filteredModel.refresh_token = refresh_token
+        filteredModel.scope = scope
+        filteredModel.expires_in = expires_in
+        filteredModel.token_type = token_type
+
+        filteredModel.save()
+    return access_token
 
 def data(request):
     unauth_client = fitbit.Fitbit('2285HX','43946f221a787192879d7242ea24adfa')
