@@ -65,7 +65,7 @@ def accesstoken(request):
         data    = "client_id="      + consumer_key     + "&" +\
                   "grant_type="     + "authorization_code"  + "&" +\
                   "redirect_uri="   + "http://127.0.0.1:8000/app/accesstoken"  + "&" +\
-                  "code="           + code
+                  "code="           + code 
 
         headers     = {
             'Authorization': 'Basic ' + encodedkeysecret,
@@ -78,10 +78,29 @@ def accesstoken(request):
         expires_in = r['expires_in']
         user_id = r['user_id']
         token_type = r['token_type']
-        return HttpResponse(user_id)
-        
+
+
+        #we need to store access token and refresh token with current user
+
+        #---------getting user data-------------
+        header = {'Authorization':'Bearer ' + access_token}
+
+        url_heartrate = "https://api.fitbit.com/1/user/" + user_id + "/activities/heart/date/today/1d/1min.json"
+        response = requests.get(url_heartrate,headers=header)
+        parseJsonData(response,'activities-heart-intraday')
+
+        url_profile = "https://api.fitbit.com/1/user/-/profile.json"
+        response = requests.get(url_profile,headers=header)
+        return HttpResponse(request.user.username)
+
     return HttpResponse("NONE")
     #http://127.0.0.1:8000/app#access_token=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI1RzVMOUciLCJhdWQiOiIyMjg1SFgiLCJpc3MiOiJGaXRiaXQiLCJ0eXAiOiJhY2Nlc3NfdG9rZW4iLCJzY29wZXMiOiJ3aHIgd251dCB3cHJvIHdzbGUgd3dlaSB3c29jIHdzZXQgd2FjdCB3bG9jIiwiZXhwIjoxNDkxMTIzODkxLCJpYXQiOjE0OTA4NDI2NDZ9.OiW30vm3elUIcJwgMpxGfMfpfOPxDSklg7T5kOspvB4&user_id=5G5L9G&scope=sleep+settings+nutrition+activity+social+heartrate+profile+weight+location&token_type=Bearer&expires_in=281245
+
+def parseJsonData(response, datatype):
+    objs = response.json()
+        #objs = json.loads(response.text)
+    for index in range(len(objs[datatype]['dataset'])):
+        print (objs[datatype]['dataset'][index]['value'])
 
 def refreshtoken(refresh_token):
     url = 'https://api.fitbit.com/oauth2/token'

@@ -27,6 +27,16 @@ class Data (models.Model):
     data_type = models.CharField(max_length=200)
     value = models.FloatField()
 
+class AuthorizationCode (models.Model):
+    access_token = models.CharField(max_length=200)
+    refresh_token = models.CharField(max_length=200)
+    scope = models.CharField(max_length=200)
+    expires_in = models.IntegerField()
+    user_id = models.CharField(max_length=200)
+    token_type = models.CharField(max_length=200)
+    
+    username = models.CharField(max_length=200)
+    
 # class Profile(models.Model):
     
 #     user = models.OneToOneField(User, on_delete=models.CASCADE)
