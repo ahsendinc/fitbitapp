@@ -19,7 +19,7 @@ class AccessTokenInfoAdmin (admin.ModelAdmin):
 class DataAdmin (admin.ModelAdmin):
 
 	list_display = ('user_id', 'date', 'time', 'data_type', 'value')
-	list_filter = ['user_id', 'date', 'time', 'data_type', 'value']
+	list_filter = ['user_id', 'date', 'data_type']
 	search_fields = ['user_id', 'date', 'time', 'data_type', 'value']
 
 admin.site.register(GenericData,GenericDataAdmin)
