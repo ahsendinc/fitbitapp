@@ -17,7 +17,6 @@ class MyRegistrationForm(UserCreationForm):
     email = forms.EmailField(required = True)
     firstname = forms.CharField(required = True)
     lastname = forms.CharField(required = True)
-    fitbitid = forms.CharField(required = True)
 
     class Meta:
         model = User
@@ -30,7 +29,6 @@ class MyRegistrationForm(UserCreationForm):
         user.email = self.cleaned_data['email']
         user.firstname = self.cleaned_data['firstname']
         user.lastname = self.cleaned_data['lastname']
-        user.fitbitid = self.cleaned_data['fitbitid']
 
         if commit:
             user.save()
