@@ -48,3 +48,8 @@ window.onclick = function(event) {
     }
 }
 
+$(document).ready(function() {
+    if ($('#modal').attr('submitted') == "true") {
+        $('#modal').show();
+    }
+ });

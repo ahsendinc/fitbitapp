@@ -252,13 +252,16 @@ def register_user(request):
         if form.is_valid():
             form.save()
             #return HttpResponseRedirect('/accounts/register_success')
-            return HttpResponse("<script>$('#modal').show();</script>")
+            return render(request, 'index.html', {
+                'success': 'true',
+            })
     # args = {}
     # args.update(csrf(request))
     # args['form'] = MyRegistrationForm()
     #print args
     return render(request, 'index.html', {
         'form': MyRegistrationForm(),
+        'success': 'false',
     })
 
 
