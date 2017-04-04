@@ -1,6 +1,64 @@
-<form method="post">
-  {% csrf_token %}
-  {{ user_form.as_p }}
-  {{ profile_form.as_p }}
-  <button type="submit">Save changes</button>
-</form>
+<!DOCTYPE html>
+<html >
+<head>
+    <meta charset="UTF-8">
+    <title>Sign-Up/Login Form</title>
+    <link href='http://fonts.googleapis.com/css?family=Titillium+Web:400,300,600' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    {% load staticfiles %}
+    <link href="{% static 'css/profile.css' %}" rel="stylesheet" />
+      <!-- <link rel="stylesheet" href="css/style.css"> -->
+
+</head>
+
+<body>
+    <nav class="navbar navbar-inverse navbar-static-top">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="#">Health Metrics</a>
+        </div>
+        <ul class="nav navbar-nav">
+          <li><a href="#">About us</a></li>
+          <li><a href="#">My data</a></li>
+        </ul>
+          <ul class="nav navbar-nav navbar-right">
+          <li><a href="logout"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+        </ul>
+      </div>
+    </nav>
+    <div id = "core-body">
+        <div id = "left-half">
+            <center><h2>User Name</h2></center>
+            <div id="left-half-profile-image">
+                <img src="{% static 'images/black-profile.png' %}" style="width:100%;">
+            </div>
+            <br>
+            <center><h3>User Information</h3></center>
+            <center><p>some information</p></center>
+            <center><p>some information</p></center>
+            <center><p>some information</p></center>
+            <center><p>some information</p></center>
+            <center><p>some information</p></center>
+            <center><p>some information</p></center>
+
+            <center><a  href = /app ><button type="button">Fitbit Connect</button></a></center>
+        </div>
+
+        <div id = "right-half">
+            <div id = "top-right-half">
+                <center><h2>Current Data</h2></center>
+            </div>
+            <div id = "bot-right-half">
+                <center><h2>Last Week's Data</h2></center>
+            </div>
+        </div>
+    </div>
+</body>
+
+

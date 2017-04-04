@@ -220,10 +220,10 @@ def data(request):
         getAllData(userTokenInfo.user_id)
     return HttpResponse("Fitbit!")
 
-def profile2(request):
+def profile(request):
     if not request.user.is_authenticated:
         return HttpResponseRedirect('/app/registration')
-    return render(request, 'profile2.html')
+    return render(request, 'profile.html')
 
 def login_view(request):
     username = request.POST['username']
