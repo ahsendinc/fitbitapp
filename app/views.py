@@ -233,7 +233,7 @@ def login_view(request):
         login(request, user)
         # Redirect to a success page.
         #return HttpResponse(user.username + ",You are successfully logged in!" )
-        return HttpResponseRedirect('/app/profile2')
+        return HttpResponseRedirect('/app/profile')
     else:
         # Return an 'invalid login' error message.
         return HttpResponse("invalid!")
