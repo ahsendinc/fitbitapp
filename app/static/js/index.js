@@ -42,6 +42,8 @@ $('.tab a').on('click', function (e) {
   
 });
 
+
+
 window.onclick = function(event) {
     if (event.target == modal) {
         modal.style.display = "none";
@@ -52,4 +54,15 @@ $(document).ready(function() {
     if ($('#modal').attr('submitted') == "true") {
         $('#modal').show();
     }
+    $('#modalButton').click(function(event) {
+        var modal = document.getElementById('modal');
+        var login = document.getElementById('login');
+        var signup = document.getElementById('signup');
+        signup.style.display = "none";
+        login.style.display = "block";
+        modal.style.display = "none";
+        $('#signUpTab').removeClass("active");
+        $('#loginTab').addClass("active");
+
+    });
  });
