@@ -82,9 +82,18 @@ def accesstoken(request):
         user_id = r['user_id']
         token_type = r['token_type']
 
-        #storing access token
-        filteredModel = AccessTokenInfo.objects.get(user_id = user_id)
-        if not filteredModel:
+          #storing access token
+        try:
+            filteredModel = AccessTokenInfo.objects.get(user_id = user_id)
+            filteredModel.access_token = access_token 
+            filteredModel.refresh_token = refresh_token
+            filteredModel.scope = scope
+            filteredModel.expires_in = expires_in
+            filteredModel.token_type = token_type
+
+            filteredModel.save()
+
+        except AccessTokenInfo.DoesNotExist:
             accessmodel = AccessTokenInfo(
                 access_token = access_token, 
                 refresh_token = refresh_token, 
@@ -95,15 +104,6 @@ def accesstoken(request):
                 username = request.user.username)
 
             accessmodel.save()
-
-        else:
-            filteredModel.access_token = access_token 
-            filteredModel.refresh_token = refresh_token
-            filteredModel.scope = scope
-            filteredModel.expires_in = expires_in
-            filteredModel.token_type = token_type
-
-            filteredModel.save()
             
         return HttpResponse("Thanks! You just connected our app to Fitbit!")
 
@@ -145,14 +145,22 @@ def getAllData(user_id):
         parseJsonData(response,'activities-distance', user_id)
 
         #get floors
-        url_floors = "https://api.fitbit.com/1/user/" + user_id + "/activities/floors/date/" + yesterday + "/1d/1min.json"
-        response = requests.get(url_floors,headers=header)
-        parseJsonData(response,'activities-floors', user_id)
+        try:
+            url_floors = "https://api.fitbit.com/1/user/" + user_id + "/activities/floors/date/" + yesterday + "/1d/1min.json"
+            response = requests.get(url_floors,headers=header)
+            parseJsonData(response,'activities-floors', user_id)
+
+        except:
+            e = "No floors available"
 
         #get elevation
-        url_elevation = "https://api.fitbit.com/1/user/" + user_id + "/activities/elevation/date/" + yesterday + "/1d/1min.json"
-        response = requests.get(url_elevation,headers=header)
-        parseJsonData(response,'activities-elevation', user_id)
+        try:
+            url_elevation = "https://api.fitbit.com/1/user/" + user_id + "/activities/elevation/date/" + yesterday + "/1d/1min.json"
+            response = requests.get(url_elevation,headers=header)
+            parseJsonData(response,'activities-elevation', user_id)
+
+        except:
+            e = "No elevation available"
 
 def parseJsonData(response, datatype, user_id):
 
