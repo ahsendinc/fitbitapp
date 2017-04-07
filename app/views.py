@@ -263,13 +263,16 @@ def register_user(request):
             return render(request, 'index.html', {
                 'success': 'true',
             })
+        else:
+            print(form.errors)
+    else:
+        form = MyRegistrationForm()
     # args = {}
     # args.update(csrf(request))
     # args['form'] = MyRegistrationForm()
     #print args
     return render(request, 'index.html', {
-        'form': MyRegistrationForm(),
+        'form': form,
         'success': 'false',
     })
-
 

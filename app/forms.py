@@ -20,7 +20,15 @@ class MyRegistrationForm(UserCreationForm):
 
     class Meta:
         model = User
-        fields = ('username','email', 'password1', 'password2')        
+        fields = ('username','email', 'password1', 'password2')
+
+    def clean(self):
+        cleaned_data = super(MyRegistrationForm, self).clean()
+        temp_password = cleaned_data['password1']
+        if "password" in temp_password:
+            self.add_error('password1', 'Your password is too simple.')
+
+        return cleaned_data
 
     def save(self,commit = True):   
         user = super(MyRegistrationForm, self).save(commit = False)

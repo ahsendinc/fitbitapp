@@ -21,6 +21,20 @@
       <div class="tab-content">
         <div id="signup">   
           <h1>Health Metrics Registration</h1>
+          {% if form.errors %}
+              {% for field in form %}
+                  {% for error in field.errors %}
+                      <div id ="errors">
+                          <center><strong><span class="glyphicon glyphicon-warning-sign"></span></span> {{ error|escape }}</strong></center>
+                      </div>
+                  {% endfor %}
+              {% endfor %}
+              {% for error in form.non_field_errors %}
+                  <div id="non-field-errors">
+                      <center><strong>{{ error|escape }}</strong></center>
+                  </div>
+              {% endfor %}
+          {% endif %}
           
           <form  action="{% url 'registration' %}" method="post">
           {% csrf_token %}
