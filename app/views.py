@@ -20,6 +20,7 @@ import base64
 
 from django.utils import timezone
 from datetime import datetime, timedelta
+from django.http import HttpResponseForbidden
 
 #@fitbit_integration_warning(msg="Integrate your account with Fitbit!")
 @login_required
@@ -105,10 +106,10 @@ def accesstoken(request):
 
             accessmodel.save()
             
-        return HttpResponse("Thanks! You just connected our app to Fitbit!")
+        return render(request, 'connectsuccess.html', {'showtext': 'Thanks, '+ request.user.username + '! You just successfully connected to Fitbit! ',  'href' : '/app/profile', 'buttontext':'Back to Profile'})
 
-    return HttpResponse("You are not logged in!")
-   
+    return render(request, 'connectsuccess.html', {'showtext': 'You are not logged in! ', 'href' : '/app/registration', 'buttontext':'Back to Login'})
+    
 #get all user data with user_id
 def getAllData(user_id):
 
@@ -224,14 +225,25 @@ def refreshtoken(refresh_token):
 
 #getting all the data for each user
 def data(request):
-    for userTokenInfo in AccessTokenInfo.objects.all():
-        getAllData(userTokenInfo.user_id)
-    return HttpResponse("Fitbit!")
+    if request.user.is_superuser: #checking whether the user is admin, but it may cause problems for cron jobs, authentication needed
+        try:
+            for userTokenInfo in AccessTokenInfo.objects.all():
+                getAllData(userTokenInfo.user_id)
+            return render(request, 'connectsuccess.html', {'showtext': 'You successfully got the data! ', 'href' : '/app/profile', 'buttontext':'Back to Profile'})
+
+        except:
+            return HttpResponse("Opps, exception happened.")
+    else:
+        if request.user.is_authenticated:
+            return render(request, 'connectsuccess.html', {'showtext': 'You are not allowed to do this action!', 'href' : '/app/profile', 'buttontext':'Back to Profile'})
+
+        else:
+            return render(request, 'connectsuccess.html', {'showtext': 'You are not allowed to do this action, you need to login first. ', 'href' : '/app/registration', 'buttontext':'Back to Login'})
 
 def profile(request):
     if not request.user.is_authenticated:
         return HttpResponseRedirect('/app/registration')
-    return render(request, 'profile.html')
+    return render(request, 'profile.html', {'username':request.user.username})
 
 def login_view(request):
     username = request.POST['username']
@@ -251,7 +263,7 @@ def logout_view(request):
     if not request.user.is_authenticated:
         return HttpResponseRedirect('/app/registration')
     logout(request)
-    return HttpResponse("You logged out successfully.")
+    return render(request, 'connectsuccess.html', {'showtext': 'You successfully logged out! ', 'href' : '/app/registration', 'buttontext':'Back to Login'})
     # Redirect to a success page.
 
 def register_user(request):
@@ -276,3 +288,9 @@ def register_user(request):
         'success': 'false',
     })
 
+# def success(request):
+#     if request.user.is_authenticated:   
+#         return render(request, 'connectsuccess.html', {'showtext': 'Thanks, '+ request.user.username + '! You just successfully connected to Fitbit! ',  'href' : '/app/profile', 'buttontext':'Back to Profile'})
+
+#     else:
+#         return HttpResponseRedirect('/app/registration')

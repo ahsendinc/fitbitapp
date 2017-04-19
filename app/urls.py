@@ -13,5 +13,6 @@ urlpatterns = [
 	url(r'^logout$', views.logout_view, name='logout'),
     url(r'^login/', views.login_view, name = "login_view"),
     url(r'^accesstoken$', views.accesstoken),
+    #url(r'^success$', views.success),
 ]
 
