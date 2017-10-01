@@ -1,9 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-import fitbit
 import requests
 from django.contrib.auth.decorators import login_required
-from fitapp.decorators import fitbit_integration_warning
 from app.models import GenericData, AccessTokenInfo, Data
 import json
 import configparser
